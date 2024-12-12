@@ -1,6 +1,6 @@
 vim9script
 
-import './keycodes.vim' as keycodes
+import './keycodes.vim'
 
 highlight! InputLineCursor cterm=inverse gui=inverse
 
@@ -121,7 +121,6 @@ export class InputLine
             this._input_enter_callback(this._text)
             this._id->popup_close()
             return
-
         elseif key_norm ==? '<left>'
             this._cursor = [0, this._cursor - 1]->max()
         elseif key_norm ==? '<right>'
@@ -130,17 +129,13 @@ export class InputLine
             this._cursor = 0
         elseif ['<end>', '<c-e>']->index(key_norm->tolower()) >= 0
             this._cursor = this._text->len()
-        elseif key_norm ==? '<bs>'
-            if this._cursor > 0
-                this._text = this._text->slice(0, this._cursor - 1)
-                    .. this._text->slice(this._cursor)
-                --this._cursor
-            endif
-        elseif key_norm ==? '<del>'
-            if this._cursor < this._text->len()
-                this._text = this._text->slice(0, this._cursor)
-                    .. this._text->slice(this._cursor + 1)
-            endif
+        elseif key_norm ==? '<bs>' && this._cursor > 0
+            this._text = this._text->slice(0, this._cursor - 1)
+                .. this._text->slice(this._cursor)
+            --this._cursor
+        elseif key_norm ==? '<del>' && this._cursor < this._text->len()
+            this._text = this._text->slice(0, this._cursor)
+                .. this._text->slice(this._cursor + 1)
         endif
         this._refresh()
     enddef
